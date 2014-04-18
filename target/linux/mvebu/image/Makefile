@@ -10,6 +10,10 @@ include $(INCLUDE_DIR)/image.mk
 TARGET_DTBS := armada-xp-db armada-370-db armada-xp-openblocks-ax3-4 armada-370-mirabox \
 		armada-370-rd armada-xp-gp
 
+ifeq ("$(PROFILE)","Mamba")
+TARGET_DTBS := armada-xp-mamba
+endif # PROFILE == Mamba
+
 LOADADDR:=0x00008000
 
 JFFS2_BLOCKSIZE = 128k
