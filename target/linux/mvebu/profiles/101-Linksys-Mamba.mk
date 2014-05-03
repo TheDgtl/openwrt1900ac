@@ -11,7 +11,8 @@ define Profile/Mamba
 	kmod-usb-storage \
 	kmod-of-i2c kmod-i2c-core kmod-i2c-mv64xxx \
 	kmod-ata-core kmod-ata-marvell-sata \
-	kmod-rtc-marvell kmod-thermal-armada
+	kmod-rtc-marvell kmod-thermal-armada \
+	linksys-base-files
 endef
 
 define Profile/Mamba/Description
