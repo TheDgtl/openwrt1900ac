@@ -12,6 +12,11 @@ TARGET_DTBS := armada-xp-db armada-370-db armada-xp-openblocks-ax3-4 armada-370-
 
 ifeq ("$(PROFILE)","Mamba")
 TARGET_DTBS := armada-xp-mamba
+JFFS2OPTS += --no-cleanmarkers
+# override add_jffs2_mark
+define add_jffs2_mark
+	echo "do nothing"
+endef
 endif # PROFILE == Mamba
 
 LOADADDR:=0x00008000
@@ -46,6 +51,27 @@ endef
 define Image/Build/Initramfs
 	$(foreach dtb,$(TARGET_DTBS),$(call Image/Build/DTB,$(dtb),-initramfs))
 endef
+
+ifeq ("$(PROFILE)","Mamba")
+define jffs2-128k-internal
+	if [ `stat -L -c %s $(KDIR)/uImage-$(2)` -lt 3145728 ]; \
+	then \
+	( \
+		dd if=$(KDIR)/uImage-$(2) bs=3072k conv=sync; \
+		dd if=$(KDIR)/root.$(1) bs=128k conv=sync; \
+	) > $(BIN_DIR)/$(IMG_PREFIX)-$(1).img ; \
+	else \
+	( \
+		dd if=$(KDIR)/uImage-$(2) bs=128k conv=sync; \
+		dd if=$(KDIR)/root.$(1) bs=128k conv=sync; \
+	) > $(BIN_DIR)/$(IMG_PREFIX)-$(1).img ; \
+	fi
+endef
+
+define Image/Build/jffs2-128k
+	$(foreach dtb,$(TARGET_DTBS),$(call jffs2-128k-internal,jffs2-128k,$(dtb)))
+endef
+endif # PROFILE == Mamba
 
 define Image/Build
 	$(call Image/Build/$(1))
