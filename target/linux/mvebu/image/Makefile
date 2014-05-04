@@ -17,6 +17,21 @@ JFFS2OPTS += --no-cleanmarkers
 define add_jffs2_mark
 	echo "do nothing"
 endef
+
+# override Image/mkfs/prepare/default
+define Image/mkfs/prepare/default
+	# Use symbolic permissions to avoid clobbering SUID/SGID/sticky bits
+	- $(FIND) $(TARGET_DIR) -type f -not -perm +0100 -not -name 'ssh_host*' -not -name 'shadow' -print0 | $(XARGS) -0 chmod u+rw,g+r,o+r
+	- $(FIND) $(TARGET_DIR) -type f -perm +0100 -print0 | $(XARGS) -0 chmod u+rwx,g+rx,o+rx
+	- $(FIND) $(TARGET_DIR) -type d -print0 | $(XARGS) -0 chmod u+rwx,g+rx,o+rx
+	$(INSTALL_DIR) $(TARGET_DIR)/tmp
+	chmod 1777 $(TARGET_DIR)/tmp
+	rm -f $(TARGET_DIR)/sbin/jffs2reset
+	rm -f $(TARGET_DIR)/usr/lib/lua/luci/controller/admin/system.lua
+	mv $(TARGET_DIR)/sbin/jffs2reset_mamba $(TARGET_DIR)/sbin/jffs2reset
+	mv $(TARGET_DIR)/usr/lib/lua/luci/controller/admin/system.lua_mamba $(TARGET_DIR)/usr/lib/lua/luci/controller/admin/system.lua
+endef
+
 endif # PROFILE == Mamba
 
 LOADADDR:=0x00008000
