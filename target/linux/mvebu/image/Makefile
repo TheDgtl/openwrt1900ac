@@ -28,8 +28,10 @@ define Image/mkfs/prepare/default
 	chmod 1777 $(TARGET_DIR)/tmp
 	rm -f $(TARGET_DIR)/sbin/jffs2reset
 	rm -f $(TARGET_DIR)/usr/lib/lua/luci/controller/admin/system.lua
+	rm -f $(TARGET_DIR)/sbin/switch2jffs
 	mv $(TARGET_DIR)/sbin/jffs2reset_mamba $(TARGET_DIR)/sbin/jffs2reset
 	mv $(TARGET_DIR)/usr/lib/lua/luci/controller/admin/system.lua_mamba $(TARGET_DIR)/usr/lib/lua/luci/controller/admin/system.lua
+	mv $(TARGET_DIR)/sbin/switch2jffs_mamba $(TARGET_DIR)/sbin/switch2jffs
 endef
 
 endif # PROFILE == Mamba
