@@ -8,4 +8,6 @@ start() {
 	/usr/sbin/leds_monitor /dev/input/event0&
 	# Sensor monitor
 	/usr/sbin/sensors_monitor&
+	# Wan monitor 
+	/usr/sbin/wan_monitor&
 }
